@@ -6,9 +6,14 @@ on:
       type:
         description: Bump versions and trigger a new release.
         required: true
+        # `options` only applies to a choice input; without this the list was inert.
+        type: choice
         default: release
         options:
           - release
+          # Publishes an -rc version as a GitHub prerelease, so libquil-sys can be
+          # built against a libquil that is not yet stable.
+          - prerelease
 
 jobs:
   build:
@@ -64,4 +69,4 @@ jobs:
           version: 0.11.0
 
       - name: Release
-        run: knope release -v
+        run: knope ${{ inputs.type }} -v

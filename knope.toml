@@ -34,6 +34,37 @@ command = "git push"
 [[workflows.steps]]
 type = "Release"
 
+# Same as "release", but cuts an -rc version and marks the GitHub release as a
+# prerelease. libquil's C ABI and the set of files it installs changed with the move
+# to modern sbcl-librarian, and libquil-sys can only be built and tested against an
+# installed libquil, so there has to be a way to publish a testable build before
+# committing to a stable version.
+[[workflows]]
+name = "prerelease"
+
+[[workflows.steps]]
+type = "PrepareRelease"
+prerelease_label = "rc"
+
+[[workflows.steps]]
+type = "Command"
+command = "echo \"\\\"$version\\\"\" > VERSION.txt && git add VERSION.txt"
+variables = { "$version" = "Version" }
+
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m \"chore: prepare prerelease $version\""
+
+[workflows.steps.variables]
+"$version" = "Version"
+
+[[workflows.steps]]
+type = "Command"
+command = "git push"
+
+[[workflows.steps]]
+type = "Release"
+
 [github]
 owner = "rigetti"
 repo = "libquil"
