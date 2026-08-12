@@ -7,11 +7,15 @@ err() {
   exit 1
 }
 
+# Which repository to fetch releases from. Override to install from a fork, which
+# is how a prerelease can be tested before it is published from the main repository.
+LIBQUIL_RELEASE_REPO="${LIBQUIL_RELEASE_REPO:-rigetti/libquil}"
+
 if [[ -n "${1-}" ]]
 then
-  LIBQUIL_URL_PREFIX="https://github.com/rigetti/libquil/releases/download/v${1}"
+  LIBQUIL_URL_PREFIX="https://github.com/${LIBQUIL_RELEASE_REPO}/releases/download/v${1}"
 else
-  LIBQUIL_URL_PREFIX="https://github.com/rigetti/libquil/releases/latest/download"
+  LIBQUIL_URL_PREFIX="https://github.com/${LIBQUIL_RELEASE_REPO}/releases/latest/download"
 fi
 
 OS="$(uname)"
